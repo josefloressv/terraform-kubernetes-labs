@@ -1,0 +1,4 @@
+packer-key.pub
+.DS_Store
+.terraform*
+*.tfstate*
