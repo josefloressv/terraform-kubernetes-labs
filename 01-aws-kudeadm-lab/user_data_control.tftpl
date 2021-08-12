@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Initialize the cluster
+kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=v1.21.0
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+# Setup local Ips
+#echo "${private_ip} ${host_name}" >> /etc/hosts
+
+# Install the Calico network add-on
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+# Get the Join command
+ kubeadm token create --print-join-command
+ 

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# changing the hostname
+hostnamectl set-hostname "${host_name}"
+
+# Setup containerd
+cat << EOF | tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+cat <<EOF | tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+sysctl --system
+
+# Install & Configure containerd
+apt update && apt install -y containerd
+mkdir -p /etc/containerd
+containerd config default | tee /etc/containerd/config.toml
+systemctl restart containerd
+
+# Disable swap
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# Install kubeadm, kubelet and kubectl
+apt install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+cat << EOF | tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+apt update && apt install -y kubelet=1.21.0-00 kubeadm=1.21.0-00 kubectl=1.21.0-00
+apt-mark hold kubelet kubeadm kubectl
