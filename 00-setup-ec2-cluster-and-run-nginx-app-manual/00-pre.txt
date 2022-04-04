@@ -1,0 +1,9 @@
+
+# Kubernetes 101 Fundamentals
+https://www.youtube.com/watch?v=VoChkYtw9mY
+
+# Live Kubernetes Cluster Set up
+https://www.youtube.com/watch?v=NWsOfVuWxjo
+
+# Install Kubernetes Cluster on Ubuntu 20.04 with kubeadm
+https://computingforgeeks.com/deploy-kubernetes-cluster-on-ubuntu-with-kubeadm/
